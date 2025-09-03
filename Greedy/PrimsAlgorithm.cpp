@@ -36,10 +36,10 @@ class Solution {
             
             for(auto &temp:adj[node])
             {
-                int neigh = temp.first;
-                int neigh_wt = temp.second;
+                int neigh_wt = temp.first;
+                int neigh = temp.second;
                 
-                pq.push({neigh,neigh_wt});
+                pq.push({neigh_wt,neigh});
                 
             }
         }
