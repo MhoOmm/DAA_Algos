@@ -51,73 +51,108 @@ class Solution {
 
 
 
-
 #include <stdio.h>
-#include <limits.h>
 #include <stdbool.h>
 
 #define MAX 100
 
-int graph[MAX][MAX];
-int parent[MAX];
-int key[MAX];
-bool mstSet[MAX];
+int adj[MAX][MAX];
+bool visited[MAX];
+int minH[MAX][2];
+int hsize = 0;
 
-int minKey(int n) {
-    int min = INT_MAX, min_index;
-    for (int v = 1; v <= n; v++) {
-        if (!mstSet[v] && key[v] < min) {
-            min = key[v];
-            min_index = v;
-        }
-    }
-    return min_index;
+void swap(int a, int b) {
+    int tempW = minH[a][0];
+    int tempN = minH[a][1];
+    minH[a][0] = minH[b][0];
+    minH[a][1] = minH[b][1];
+    minH[b][0] = tempW;
+    minH[b][1] = tempN;
 }
 
-void primMST(int n) {
-    for (int i = 1; i <= n; i++) {
-        key[i] = INT_MAX;
-        mstSet[i] = false;
+void heapify(int i) {
+    int smallest = i;
+    int left = 2 * i;
+    int right = 2 * i + 1;
+
+    if (left <= hsize && minH[left][0] < minH[smallest][0])
+        smallest = left;
+    if (right <= hsize && minH[right][0] < minH[smallest][0])
+        smallest = right;
+
+    if (smallest != i) {
+        swap(i, smallest);
+        heapify(smallest);
     }
-    key[1] = 0;
-    parent[1] = -1;
-    for (int count = 1; count <= n - 1; count++) {
-        int u = minKey(n);
-        mstSet[u] = true;
-        for (int v = 1; v <= n; v++) {
-            if (graph[u][v] && !mstSet[v] && graph[u][v] < key[v]) {
-                parent[v] = u;
-                key[v] = graph[u][v];
+}
+
+void push(int wt, int node) {
+    hsize++;
+    minH[hsize][0] = wt;
+    minH[hsize][1] = node;
+
+    int i = hsize;
+    while (i > 1 && minH[i][0] < minH[i / 2][0]) {
+        swap(i, i / 2);
+        i /= 2;
+    }
+}
+
+void pop(int *wt, int *node) {
+    if (hsize == 0) return;
+
+    *wt = minH[1][0];
+    *node = minH[1][1];
+
+    minH[1][0] = minH[hsize][0];
+    minH[1][1] = minH[hsize][1];
+    hsize--;
+    heapify(1);
+}
+
+int prims(int V) {
+    for (int i = 0; i < V; i++)
+        visited[i] = false;
+
+    hsize = 0;
+    push(0, 0);
+    int cost = 0;
+
+    while (hsize > 0) {
+        int wt, node;
+        pop(&wt, &node);
+
+        if (visited[node]) continue;
+        visited[node] = true;
+        cost += wt;
+
+        for (int neigh = 0; neigh < V; neigh++) {
+            if (adj[node][neigh] != 0 && !visited[neigh]) {
+                push(adj[node][neigh], neigh);
             }
         }
     }
-}
 
-void printMST(int n) {
-    int sum = 0;
-    printf("Edges in the MST:\n");
-    for (int i = 2; i <= n; i++) {
-        printf("%d -- %d == %d\n", parent[i], i, graph[i][parent[i]]);
-        sum += graph[i][parent[i]];
-    }
-    printf("Min cost: %d\n", sum);
+    return cost;
 }
 
 int main() {
-    int n, m;
-    scanf("%d %d", &n, &m);
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= n; j++) {
-            graph[i][j] = 0;
-        }
-    }
-    for (int i = 0; i < m; i++) {
+    int V, E;
+    scanf("%d %d", &V, &E);
+
+    for (int i = 0; i < V; i++)
+        for (int j = 0; j < V; j++)
+            adj[i][j] = 0;
+
+    for (int i = 0; i < E; i++) {
         int u, v, w;
         scanf("%d %d %d", &u, &v, &w);
-        graph[u][v] = w;
-        graph[v][u] = w;
+        adj[u][v] = w;
+        adj[v][u] = w;
     }
-    primMST(n);
-    printMST(n);
+
+    int result = prims(V);
+    printf("Minimum Spanning Tree Weight: %d\n", result);
+
     return 0;
 }

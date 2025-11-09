@@ -43,109 +43,55 @@ class Solution {
 
 //**************************************************C-Code***************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
+// #include <stdio.h>
+// struct Item{
+//     int weight;
+//     int value;
+//     double ratio;
+// };
+// int main(){
 
-struct item {
-    int id;
-    int weight;
-    int profit;
-    double ratio;
-};
+//     int wt[] = {10,20,30};
+//     int val[] = {60,100,120};
 
-void heapify(struct item arr[], int n, int i) {
-    int largest = i;
-    int l = 2 * i + 1;
-    int r = 2 * i + 2;
+//     struct Item it[3];
+//     int n=3;
+//     for(int i=0;i<3;i++)
+//     {
+//         it[i].weight= wt[i];
+//         it[i].value = val[i];
+//         it[i].ratio = (double)it[i].value/it[i].weight;
+//     }
+//     int W = 60;
 
-    if (l < n && arr[l].ratio > arr[largest].ratio) {
-        largest = l;
-    }
-    if (r < n && arr[r].ratio > arr[largest].ratio) {
-        largest = r;
-    }
+//     for (int i = 1; i < n; i++) {
+//         struct Item key = it[i];
+//         int j = i - 1;
 
-    if (largest != i) {
-        struct item temp = arr[i];
-        arr[i] = arr[largest];
-        arr[largest] = temp;
-
-        heapify(arr, n, largest);
-    }
-}
-
-void heapSort(struct item arr[], int n) {
-    for (int i = n / 2 - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    for (int i = n - 1; i > 0; i--) {
-        struct item temp = arr[0];
-        arr[0] = arr[i];
-        arr[i] = temp;
-
-        heapify(arr, i, 0);
-    }
-}
-
-int main() {
-    struct item s[100];
-    int n;
-    printf("Enter the number of items: ");
-    scanf("%d", &n);
-
-    for (int i = 0; i < n; i++) {
-        printf("id: ");
-        scanf("%d", &s[i].id);
-        printf("weight: ");
-        scanf("%d", &s[i].weight);
-        printf("profit: ");
-        scanf("%d", &s[i].profit);
-
-        s[i].ratio = (double)s[i].profit / s[i].weight;
-    }
-
-    heapSort(s, n);
-    heapSort(s, n);
-
-    for (int i = 0; i < n / 2; i++) {
-        struct item temp = s[i];
-        s[i] = s[n - i - 1];
-        s[n - i - 1] = temp;
-    }
+//         while (j >= 0 && it[j].ratio < key.ratio) {
+//             it[j + 1] = it[j];
+//             j--;
+//         }
+//         it[j + 1] = key;
+//     }
 
 
-    int cap;
-    printf("Enter the knapsack capacity: ");
-    scanf("%d", &cap);
+//     double profit = 0;
 
-    double maxval = 0.0;
-    double taken[n];
+//     for(int i=0;i<n;i++)
+//     {
+//         if(it[i].weight <= wt)
+//         {
+//             profit+=it[i].value;
+//             W-= it[i].weight;
+//         }else{
+//             profit += it[i].value * ((double)W/it[i].weight);
+//             break;
+//         }
+//     }
 
-    for (int i = 0; i < n; i++) {
-        taken[i] = 0.0;
-    }
+//     printf("%f",profit);
 
-    for (int i = 0; i < n; i++) {
-        if (cap == 0) break;
+//     return 0;
 
-        if (s[i].weight <= cap) {
-            maxval += s[i].profit;
-            cap -= s[i].weight;
-            taken[i] = 1.0;
-        } else {
-            taken[i] = (double)cap / s[i].weight;
-            maxval += s[i].profit * taken[i];
-            cap = 0;
-        }
-    }
-    printf("\nitem   profit   weight   amount\n");
-    for (int i = 0; i < n; i++) {
-        printf("%d \t %d \t %d \t %.5f\n",
-               s[i].id, s[i].profit, s[i].weight, taken[i]);
-    }
-    printf("Maximum profit: %.5f\n", maxval);
-
-    return 0;
-}
-
+// }

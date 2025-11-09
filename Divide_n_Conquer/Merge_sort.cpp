@@ -51,3 +51,62 @@ int main() {
     cout << endl;
     return 0;
 }
+
+
+
+#include<stdio.h>
+
+void merge(int l,int r,int mid,int arr[])
+{
+    int b[r-l+1];
+    int i = l;
+    int j = mid+1;
+    int k = 0;
+
+    while(i<=mid && j<=r)
+    {
+        if(arr[i]<arr[j])
+        {
+            b[k++] = arr[i++];
+        }else{
+            b[k++] = arr[j++];
+        }
+    }
+
+    while(i<=mid)
+    {
+       b[k++] = arr[i++]; 
+    }
+
+    while(j<=r)
+    {
+        b[k++] = arr[j++];
+    }
+
+    for(int i=0;i<(r-l+1);i++)
+    {
+        arr[l+i] = b[i];
+    }
+}
+void mergeSort(int arr[] ,int l ,int r)
+{
+    if(l>=r) return;
+    int mid=(l+r)/2;
+    mergeSort(arr,l,mid);
+    mergeSort(arr,mid+1,r);
+    merge(l,r,mid,arr);
+}
+
+int main(){
+
+    int arr[] = {1,2,4,3,5,6};
+    int l =0;
+    int r = 5;
+    mergeSort(arr,l,r);
+
+    for(int i =0;i<6;i++)
+    {
+      printf("%d\n",arr[i]);
+    }
+    return 0;
+}
